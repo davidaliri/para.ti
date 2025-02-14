@@ -1,0 +1,506 @@
+<!-- 
+    Autor: Andres Hincapie
+    Descripción: Página web interactiva para hacer una propuesta de San Valentín.
+    La página incluye animaciones, efectos visuales y una experiencia interactiva
+    con botones dinámicos y corazones flotantes.
+-->
+<!-- Declaración del tipo de documento HTML -->
+<!DOCTYPE html>
+<!-- Inicio del documento HTML con idioma español -->
+<html lang="es">
+<!-- Sección head con metadatos y recursos -->
+<head>
+    <!-- Codificación de caracteres UTF-8 -->
+    <meta charset="UTF-8">
+    <!-- Configuración de la vista para dispositivos móviles -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título de la página -->
+    <title>Propuesta de San Valentín</title>
+    <!-- Enlace a la biblioteca de Font Awesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Inicio de los estilos CSS -->
+    <style>
+        /* Estilos para el cuerpo de la página */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffe6e6 0%, #ffb3b3 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Estilos para el contenedor principal */
+        .contenedor {
+            text-align: center;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 95%;
+            margin: auto;
+            position: relative;
+            overflow: hidden;
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+            animation: flotar 3s ease-in-out infinite;
+        }
+
+        /* Animación de flotación */
+        @keyframes flotar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Estilos para la imagen */
+        .imagen {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+            border: 3px solid #fff;
+        }
+
+        /* Efecto hover para la imagen */
+        .imagen:hover {
+            transform: scale(1.02);
+        }
+
+        /* Estilos para el título */
+        .titulo {
+            color: #ff4d6d;
+            margin-bottom: 20px;
+            font-size: 2.2em;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff4d6d, #ff758c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Estilos para el contenedor de botones */
+        .botones {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        /* Estilos generales para los botones */
+        .boton {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* Efecto de brillo para los botones */
+        .boton::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        /* Animación del efecto de brillo */
+        .boton:hover::before {
+            left: 100%;
+        }
+
+        /* Estilos específicos para el botón "Sí" */
+        .boton-si {
+            background: linear-gradient(45deg, #ff4d6d, #ff758c);
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Estilos específicos para el botón "No" */
+        .boton-no {
+            background: linear-gradient(45deg, #808080, #a0a0a0);
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Estilos para los íconos de corazón */
+        .corazon {
+            font-size: 24px;
+            margin: 0 8px;
+        }
+
+        /* Estilos para el modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Estilos para el contenido del modal */
+        .modal-contenido {
+            position: relative;
+            background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+            padding: 30px;
+            width: 90%;
+            max-width: 350px;
+            border-radius: 20px;
+            text-align: center;
+            animation: aparecer 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Estilos para la imagen dentro del modal */
+        .modal-contenido img {
+            width: 100%;
+            max-width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin: 0 auto;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border: 3px solid #fff;
+        }
+
+        /* Estilos para el título del modal */
+        .modal-titulo {
+            width: 100%;
+            color: #ff4d6d;
+            font-size: 1.6em;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        /* Estilos para el texto del modal */
+        .modal-texto {
+            width: 100%;
+            font-size: 1em;
+            line-height: 1.5;
+            color: #666;
+            margin: 0;
+            padding: 0 10px;
+        }
+
+        /* Estilos para los corazones del modal */
+        .modal-corazones {
+            width: 100%;
+            color: #ff4d6d;
+            font-size: 1.8em;
+            margin: 5px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Animación para los corazones del modal */
+        .modal-corazones i {
+            animation: latir 1.5s ease infinite;
+        }
+
+        /* Keyframes para la animación de latido */
+        @keyframes latir {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Media queries para pantallas grandes */
+        @media (min-width: 769px) {
+            .contenedor {
+                padding: 2rem;
+                transform: scale(0.9);
+            }
+
+            .imagen:hover {
+                transform: scale(1.02);
+            }
+
+            .boton:hover {
+                transform: translateY(-2px);
+            }
+        }
+
+        /* Media queries para tablets */
+        @media (max-width: 768px) {
+            .contenedor {
+                padding: 1.5rem;
+                width: 90%;
+            }
+
+            .titulo {
+                font-size: 1.8em;
+            }
+
+            .imagen {
+                height: 250px;
+                width: 90%;
+                margin: 0 auto 15px;
+            }
+
+            .botones {
+                flex-direction: column;
+                gap: 12px;
+                padding: 0 10px;
+            }
+
+            .boton {
+                width: 100%;
+                padding: 12px 30px;
+            }
+
+            .modal-contenido {
+                max-width: 320px;
+                padding: 20px;
+            }
+
+            .modal-contenido img {
+                max-width: 220px;
+                height: 220px;
+            }
+
+            .modal-titulo {
+                font-size: 1.4em;
+            }
+
+            .modal-texto {
+                font-size: 0.9em;
+            }
+        }
+
+        /* Media queries para móviles */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .contenedor {
+                padding: 1rem;
+            }
+
+            .titulo {
+                font-size: 1.5em;
+            }
+
+            .imagen {
+                height: 200px;
+            }
+
+            .boton {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+
+            .modal-contenido {
+                padding: 15px;
+                width: 85%;
+            }
+        }
+
+        /* Media queries para móviles pequeños */
+        @media (max-width: 320px) {
+            .titulo {
+                font-size: 1.3em;
+            }
+
+            .imagen {
+                height: 180px;
+            }
+
+            .boton {
+                padding: 8px 16px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Estilos para los corazones flotantes */
+        .corazon-flotante {
+            position: fixed;
+            font-size: 30px;
+            color: rgba(255, 77, 109, 0.8);
+            z-index: -1;
+            animation: flotar-corazon 8s linear infinite;
+            pointer-events: none;
+            filter: drop-shadow(0 0 5px rgba(255, 77, 109, 0.5));
+        }
+
+        /* Animación para los corazones flotantes */
+        @keyframes flotar-corazon {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<!-- Cuerpo del documento -->
+<body>
+    <!-- Contenedor para los corazones flotantes -->
+    <div id="contenedor-corazones"></div>
+    <!-- Contenedor principal -->
+    <div class="contenedor">
+        <!-- Título principal con corazones -->
+        <h1 class="titulo">
+            <i class="fas fa-heart corazon"></i>
+            ¿Quieres ser mi Valentín?<br>
+              " mi amor , CHARIS    "
+            <i class="fas fa-heart corazon"></i>
+        </h1>
+        <!-- Imagen principal -->
+        <img src="img/1.png" alt="Imagen romántica" class="imagen" id="imagenPropuesta">
+        <!-- Contenedor de botones -->
+        <div class="botones">
+            <!-- Botón de aceptar -->
+            <button class="boton boton-si" onclick="aceptar()">
+                <i class="fas fa-heart"></i> ¡Sí, quiero!
+            </button>
+            <!-- Botón de rechazar -->
+            <button class="boton boton-no" id="botonNo" onclick="esquivar()">
+                <i class="fas fa-times"></i> No
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de aceptación -->
+    <div id="modalAceptar" class="modal">
+        <div class="modal-contenido">
+            <!-- Corazones decorativos superiores -->
+            <div class="modal-corazones">
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-heart"></i>
+            </div>
+            <!-- Título del modal -->
+            <h2 class="modal-titulo">¡Has hecho mi día especial!</h2>
+            <!-- Texto del modal -->
+            <p class="modal-texto">
+                Sabía que nuestros corazones estaban destinados a estar juntos. 💑<br>
+                Este San Valentín será mágico e inolvidable.<br>
+                ¡Te quiero con todo mi corazón, CHARIS! 💝
+            </p>
+            <!-- Corazones decorativos inferiores -->
+            <div class="modal-corazones">
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-heart"></i>
+                <i class="fas fa-heart"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de JavaScript -->
+    <script>
+        // Variables para el tamaño de los botones
+        let tamanoBotonNo = 1;
+        let tamanoBotonSi = 1;
+        // Array de imágenes
+        const imagenes = [
+            "img/1.png",
+            "img/2.png"
+        ];
+        let indiceImagen = 0;
+
+        // Función para esquivar el botón "No"
+        function esquivar() {
+            tamanoBotonNo = Math.max(0.3, tamanoBotonNo - 0.1);
+            document.getElementById('botonNo').style.transform = `scale(${tamanoBotonNo})`;
+            
+            tamanoBotonSi = Math.min(1.5, tamanoBotonSi + 0.1);
+            document.querySelector('.boton-si').style.transform = `scale(${tamanoBotonSi})`;
+            
+            const imagen = document.getElementById('imagenPropuesta');
+            imagen.style.opacity = '0';
+            setTimeout(() => {
+                imagen.src = "img/5.png";
+                imagen.style.opacity = '1';
+            }, 200);
+        }
+
+        // Función para aceptar la propuesta
+        function aceptar() {
+            const modal = document.getElementById('modalAceptar');
+            modal.style.display = 'flex';
+            
+            // Limpiar contenido existente
+            const modalContenido = modal.querySelector('.modal-contenido');
+            let imagenExistente = modalContenido.querySelector('img');
+            
+            if (!imagenExistente) {
+                const imagenModal = document.createElement('img');
+                imagenModal.src = 'img/3.png';
+                imagenModal.alt = 'Imagen de amor';
+                modalContenido.insertBefore(imagenModal, modalContenido.firstChild);
+            }
+            
+            // Lanzar confeti
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#ff4d6d', '#ff758c', '#ff8fa3', '#ffb3c1']
+            });
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalAceptar');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Función para crear corazones flotantes
+        function crearCorazones() {
+            const contenedor = document.getElementById('contenedor-corazones');
+            const corazon = document.createElement('i');
+            
+            corazon.classList.add('fas', 'fa-heart', 'corazon-flotante');
+            
+            const posicionX = Math.random() * window.innerWidth;
+            const tamano = Math.random() * (50 - 30) + 30;
+            const duracion = Math.random() * (12 - 8) + 8;
+            
+            corazon.style.left = posicionX + 'px';
+            corazon.style.fontSize = tamano + 'px';
+            corazon.style.animationDuration = duracion + 's';
+            
+            contenedor.appendChild(corazon);
+            
+            // Eliminar corazón después de la animación
+            setTimeout(() => {
+                corazon.remove();
+            }, duracion * 1000);
+        }
+
+        // Crear corazones cada 200ms
+        setInterval(crearCorazones, 200);
+    </script>
+
+    <!-- Script para efectos de confeti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</body>
+</html>
